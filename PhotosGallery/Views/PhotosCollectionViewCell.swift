@@ -1,10 +1,3 @@
-//
-//  CollectionViewCell.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 5.02.24.
-//
-
 import UIKit
 import SnapKit
 import SDWebImage

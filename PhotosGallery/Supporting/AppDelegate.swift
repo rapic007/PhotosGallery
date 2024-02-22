@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 1.02.24.
-//
-
 import UIKit
 
 @main

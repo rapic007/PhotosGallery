@@ -1,10 +1,3 @@
-//
-//  FavouritesViewController.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 1.02.24.
-//
-
 import UIKit
 
 class FavoritesVC: UIViewController {
@@ -22,14 +15,14 @@ class FavoritesVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         setupCollectionView()
+        setupNavigationBar()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        photos = UserDefaults.standard.get(key: "selectedPhotos", type: [UnsplashPhoto].self) ?? []
-        collectionView.reloadData()
+        showPhotos()
     }
     
     private func setupCollectionView() {
@@ -43,6 +36,41 @@ class FavoritesVC: UIViewController {
         collectionView.allowsMultipleSelection = true
         collectionView.dataSource = self
         collectionView.delegate = self
+    }
+    
+    private func setupNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .systemBackground
+        navigationItem.standardAppearance = appearance
+        navigationController?.navigationBar.tintColor = UIColor(red: 0.208, green: 0.208, blue: 0.208, alpha: 1)
+        lazy var addBarButtomItem: UIBarButtonItem = {
+            return UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(trashBarButtonTapped))
+        }()
+        
+
+        navigationItem.rightBarButtonItem = addBarButtomItem
+    }
+    
+    private func showPhotos() {
+        photos = UserDefaults.standard.get(key: .save, type: [UnsplashPhoto].self) ?? []
+        collectionView.reloadData()
+    }
+    
+    @objc func trashBarButtonTapped() {
+        let alertController = UIAlertController(title: "", message: "Clear saved Photos?", preferredStyle: .alert)
+        let add = UIAlertAction(title: "Yes", style: .default) { (action) in
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+            self.photos = []
+            UserDefaults.standard.set(value: self.photos, key: .save)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "clear"), object: nil)
+        }
+        
+        let cancel = UIAlertAction(title: "No", style: .cancel)
+        alertController.addAction(add)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
     }
 }
 

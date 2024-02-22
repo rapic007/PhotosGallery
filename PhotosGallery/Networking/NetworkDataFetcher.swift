@@ -1,10 +1,3 @@
-//
-//  NetworkDataFetcher.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 4.02.24.
-//
-
 import UIKit
 
 class NetworkDataFetcher {

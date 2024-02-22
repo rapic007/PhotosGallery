@@ -1,17 +1,10 @@
-//
-//  ViewController.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 1.02.24.
-//
-
 import UIKit
 import SnapKit
 
 class PhotosVC: UIViewController {
     
     private var photos: [UnsplashPhoto] = []
-    private var savedPhoto: [UnsplashPhoto] = []
+    var savedPhoto: [UnsplashPhoto] = []
     
     var page = 1
     
@@ -34,16 +27,21 @@ class PhotosVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         setupNavigationBar()
         setupSearchController()
         setupCollectionView()
         setupSavedPhoto()
+        setupNotificationCenter()
     }
     
     private func setupSavedPhoto() {
-        savedPhoto = UserDefaults.standard.get(key: "selectedPhotos", type: [UnsplashPhoto].self) ?? []
+        savedPhoto = UserDefaults.standard.get(key: .save, type: [UnsplashPhoto].self) ?? []
     }
+    
+    private func setupNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(clear), name: Notification.Name("clear"), object: nil)
+    }
+    
     private func setupCollectionView() {
         self.view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
@@ -106,14 +104,16 @@ class PhotosVC: UIViewController {
             mutablePhotos.append(photo)
             return mutablePhotos
        }) else { return }
+        
         let alertController = UIAlertController(title: "", message: "\(selectedPhotos.count) Photos will be add to favorites ", preferredStyle: .alert)
         let add = UIAlertAction(title: "Add", style: .default) { (action) in
             for photo in selectedPhotos {
                 self.savedPhoto.insert(photo, at: 0)
             }
-            UserDefaults.standard.set(value: self.savedPhoto, key: "selectedPhotos")
+            UserDefaults.standard.set(value: self.savedPhoto, key: .save)
             self.clearSecelectedItems()
         }
+        
         let cancel = UIAlertAction(title: "Cancel", style: .cancel)
         alertController.addAction(add)
         alertController.addAction(cancel)
@@ -130,6 +130,10 @@ class PhotosVC: UIViewController {
         
         self.collectionView.reloadData()
         refreshControl.endRefreshing()
+    }
+    
+    @objc func clear() {
+        self.savedPhoto = []
     }
 }
 
@@ -183,24 +187,5 @@ extension PhotosVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 2
         
-    }
-}
-
-extension UserDefaults {
-    
-    
-    func set <T: Encodable>(value: T, key: String) {
-        let encoder = JSONEncoder()
-        guard let data = try? encoder.encode(value) else { return }
-        UserDefaults.standard.set(data, forKey: key)
-    }
-    
-    func get <T:Decodable>(key: String, type: T.Type ) -> T? {
-     let decoder = JSONDecoder()
-        
-        guard let data = data(forKey: key),
-              let object = try? decoder.decode(type, from: data)
-        else { return nil }
-        return object
     }
 }

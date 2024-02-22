@@ -1,10 +1,3 @@
-//
-//  FavoritesCollectionViewCell.swift
-//  PhotosGallery
-//
-//  Created by Влад  on 9.02.24.
-//
-
 import UIKit
 import SnapKit
 import SDWebImage
