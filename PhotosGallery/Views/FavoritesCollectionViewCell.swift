@@ -26,9 +26,8 @@ class FavoritesCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-
     public func configure(with unsplashPhoto: UnsplashPhoto) {
-        let photoUrl = unsplashPhoto.urls["small"]
+        let photoUrl = unsplashPhoto.urls["regular"]
         guard let imageUrl = photoUrl, let url = URL(string: imageUrl) else { return }
         
         photoImageView.sd_setImage(with: url)

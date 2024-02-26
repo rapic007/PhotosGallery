@@ -7,7 +7,7 @@ class NetworkService {
         guard let url = self.url(params: parametrs) else { return }
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = prepareHeaders()
-        request.httpMethod = "get"
+        request.httpMethod = HTTPMethod.get
         let task = createDataTask(from: request, completion: completion)
         task.resume()
     }
@@ -28,9 +28,9 @@ class NetworkService {
     
     private func url(params: [String: String]) -> URL? {
         var components = URLComponents()
-        components.scheme = "https"
-        components.host = "api.unsplash.com"
-        components.path = "/search/photos"
+        components.scheme = Components.scheme
+        components.host = Components.host
+        components.path = Components.path
         components.queryItems = params.map { URLQueryItem(name: $0, value: $1)}
 
         return components.url

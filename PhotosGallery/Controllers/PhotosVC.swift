@@ -126,9 +126,9 @@ class PhotosVC: UIViewController {
         self.networkDataFetcher.fetchImages(searchTerm: self.searchTherm, page: self.page) { [weak self](searchResults) in
             guard let fetchedPhotos = searchResults else { return }
             self?.photos = fetchedPhotos.results
+            self?.collectionView.reloadData()
         }
         
-        self.collectionView.reloadData()
         refreshControl.endRefreshing()
     }
     
